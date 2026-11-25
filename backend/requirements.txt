@@ -1,0 +1,6 @@
+flask
+flask-sqlalchemy
+flask-cors
+requests
+reportlab
+ultralytics==8.4.198

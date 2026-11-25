@@ -1,0 +1,562 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoadFix | Admin Control Center</title>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="admin-bg rf-admin-body">
+
+<div class="rf-layout">
+
+    <aside class="rf-sidebar" id="rfSidebar">
+
+        <div class="rf-brand">
+            <div class="rf-brand-icon">R</div>
+            <div>
+                <h2>ROADFIX</h2>
+                <span>INTELLIGENT ROAD SYSTEM</span>
+            </div>
+        </div>
+
+        <div class="rf-side-label">CONTROL CENTER</div>
+
+        <nav class="rf-navigation">
+
+            <button class="rf-nav-item active" data-view="overview">
+                <span>▦</span> Overview
+            </button>
+            <button class="rf-nav-item" data-view="monthly-reports">
+                 <span>▦</span> Monthly Reports
+            </button>
+
+            <button class="rf-nav-item" data-view="map-section">
+                <span>⌖</span> Live Map
+            </button>
+
+            <button class="rf-nav-item" data-view="complaints">
+                <span>▤</span> All Complaints
+            </button>
+
+            <button class="rf-nav-item" data-view="ai-detection">
+                <span>◎</span> AI Detection
+            </button>
+
+            <button class="rf-nav-item" data-view="status-tracking">
+                <span>⇄</span> Status Tracking
+            </button>
+
+            <button class="rf-nav-item" data-view="work-orders">
+                <span>▧</span> Work Orders
+            </button>
+
+        </nav>
+
+        <div class="rf-sidebar-bottom">
+            <div class="rf-system-status">
+                <span class="rf-status-dot"></span>
+                <div>
+                    <strong>System Active</strong>
+                    <small>RoadFix monitoring</small>
+                </div>
+            </div>
+
+            <a href="/logout" class="rf-logout">↪ Logout</a>
+        </div>
+
+    </aside>
+
+
+    <main class="rf-main">
+
+        <header class="rf-topbar">
+
+            <div>
+                <div class="rf-top-label">ROADFIX / ADMINISTRATION</div>
+                <h1 id="rfPageTitle">Overview</h1>
+                <p id="rfPageSubtitle">
+                    Road damage monitoring and maintenance intelligence
+                </p>
+            </div>
+
+            <div class="rf-top-actions">
+                <span class="rf-zone">CHENNAI SOUTH ZONE</span>
+                <div class="rf-admin-avatar">A</div>
+            </div>
+
+        </header>
+
+
+        <!-- OVERVIEW -->
+
+        <section class="rf-view active" id="overview">
+
+            <div class="rf-welcome">
+                <div>
+                    <span class="rf-eyebrow">INTELLIGENT ROAD MONITORING</span>
+                    <h2>Road Infrastructure Control Center</h2>
+                    <p>
+                        Monitor road damage, review AI detections,
+                        and manage repair operations from one place.
+                    </p>
+                </div>
+
+                <div class="rf-welcome-symbol">RF</div>
+            </div>
+
+            <div class="rf-stat-grid" id="stats">
+
+                <div class="rf-stat-card">
+                    <span>Total Complaints</span>
+                    <strong id="rfTotal">--</strong>
+                    <small>All registered tickets</small>
+                </div>
+
+                <div class="rf-stat-card">
+                    <span>Open Complaints</span>
+                    <strong id="rfOpen">--</strong>
+                    <small>Awaiting completion</small>
+                </div>
+
+                <div class="rf-stat-card">
+                    <span>Duplicates Merged</span>
+                    <strong id="rfDuplicates">--</strong>
+                    <small>Accepted reports</small>
+                </div>
+
+                <div class="rf-stat-card">
+                    <span>Average Repair Time</span>
+                    <strong id="rfRepairTime">--</strong>
+                    <small>Days per completed ticket</small>
+                </div>
+
+            </div>
+
+            <div class="rf-overview-grid">
+
+                <div class="rf-panel">
+                    <div class="rf-panel-heading">
+                        <div>
+                            <span class="rf-eyebrow">WORKFLOW</span>
+                            <h3>Complaint Pipeline</h3>
+                        </div>
+                        <span class="rf-live-tag">LIVE COUNTS</span>
+                    </div>
+
+                    <div id="pipeline" class="rf-pipeline"></div>
+                </div>
+
+                <div class="rf-panel rf-rejection-panel">
+                    <span class="rf-eyebrow">REPORT QUALITY</span>
+                    <h3>Rejected Reports</h3>
+                    <strong id="rfRejected">--</strong>
+                    <p>Percentage of submitted reports rejected by the system.</p>
+                </div>
+
+            </div>
+
+            <div class="rf-panel">
+                <div class="rf-panel-heading">
+                    <div>
+                        <span class="rf-eyebrow">PRIORITY MONITORING</span>
+                        <h3>High Priority Complaints</h3>
+                    </div>
+
+                    <button class="rf-small-button" data-open-view="complaints">
+                        View all complaints →
+                    </button>
+                </div>
+
+                <div class="rf-table-wrap">
+                    <table class="rf-table">
+                        <thead>
+                            <tr>
+                                <th>Ticket</th>
+                                <th>Road / Location</th>
+                                <th>Damage</th>
+                                <th>Severity</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rfOverviewTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+        <!-- MONTHLY REPORTS CALENDAR -->
+
+<section class="rf-view" id="monthly-reports">
+
+    <div class="rf-section-intro">
+        <span class="rf-eyebrow">REPORT ANALYTICS</span>
+        <h2>Monthly Reports Calendar</h2>
+        <p>Monitor submitted complaints, completed repairs and daily report activity.</p>
+    </div>
+
+    <div class="rf-panel">
+
+        <div class="rf-panel-heading">
+            <div>
+                <span class="rf-eyebrow">MONTHLY OVERVIEW</span>
+                <h3>Select Month</h3>
+            </div>
+
+            <input type="month" id="rfCalendarMonth">
+        </div>
+
+        <div class="rf-calendar-summary">
+
+            <div class="rf-calendar-stat">
+                <span>Total Reports</span>
+                <strong id="rfCalendarTotal">0</strong>
+            </div>
+
+            <div class="rf-calendar-stat">
+                <span>Accepted Reports</span>
+                <strong id="rfCalendarAccepted">0</strong>
+            </div>
+
+            <div class="rf-calendar-stat">
+                <span>Completed</span>
+                <strong id="rfCalendarCompleted">0</strong>
+            </div>
+
+            <div class="rf-calendar-stat">
+                <span>Incomplete</span>
+                <strong id="rfCalendarIncomplete">0</strong>
+            </div>
+
+            <div class="rf-calendar-stat">
+                <span>Rejected</span>
+                <strong id="rfCalendarRejected">0</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="rf-calendar-layout">
+
+        <div class="rf-panel">
+
+            <div class="rf-panel-heading">
+                <div>
+                    <span class="rf-eyebrow">DAILY ACTIVITY</span>
+                    <h3 id="rfCalendarHeading">Monthly Calendar</h3>
+                </div>
+            </div>
+
+            <div class="rf-calendar-weekdays">
+                <span>Sun</span>
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+            </div>
+
+            <div id="rfCalendarGrid" class="rf-calendar-grid">
+                <p>Select a month to load reports.</p>
+            </div>
+
+            <div class="rf-calendar-legend">
+                <span><i class="rf-calendar-dot reported"></i> Reports submitted</span>
+                <span><i class="rf-calendar-dot completed"></i> Completed</span>
+                <span><i class="rf-calendar-dot incomplete"></i> Incomplete</span>
+            </div>
+
+        </div>
+
+        <div class="rf-panel rf-calendar-chart-panel">
+
+            <span class="rf-eyebrow">REPAIR PERFORMANCE</span>
+            <h3>Complaint Status Analytics</h3>
+<div class="rf-calendar-chart">
+    <h4>Daily Complaint Status — Line Chart</h4>
+    <canvas id="rfCalendarLineChart"></canvas>
+</div>
+
+<div class="rf-calendar-chart">
+    <h4>Monthly Complaint Status — Pie Chart</h4>
+    <canvas id="rfCalendarChart"></canvas>
+</div>
+
+        </div>
+
+    </div>
+
+    <div class="rf-panel">
+
+        <div class="rf-panel-heading">
+            <div>
+                <span class="rf-eyebrow">SELECTED DATE</span>
+                <h3 id="rfCalendarDetailHeading">Daily Complaint Details</h3>
+            </div>
+        </div>
+
+        <div id="rfCalendarDetails">
+            <p>Select a date in the calendar to view complaints.</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+        <!-- LIVE MAP -->
+
+        <section class="rf-view" id="map-section">
+
+            <div class="rf-section-intro">
+                <span class="rf-eyebrow">GEOGRAPHICAL MONITORING</span>
+                <h2>Road Damage Locations</h2>
+                <p>View reported road-damage tickets on the map.</p>
+            </div>
+
+            <div class="rf-panel">
+                <div class="rf-panel-heading">
+                    <h3>Chennai South — Ticket Map</h3>
+                    <span class="rf-live-tag">LOCATION VIEW</span>
+                </div>
+
+                <div id="map" class="rf-map"></div>
+            </div>
+
+        </section>
+
+
+        <!-- ALL COMPLAINTS -->
+
+        <section class="rf-view" id="complaints">
+
+            <div class="rf-section-intro">
+                <span class="rf-eyebrow">TICKET MANAGEMENT</span>
+                <h2>All Road Damage Complaints</h2>
+                <p>Review complaints and inspect their repair priority.</p>
+            </div>
+
+            <div class="rf-panel">
+
+                <div class="rf-toolbar">
+                    <input
+                        type="search"
+                        id="rfSearch"
+                        placeholder="Search ticket, road or damage..."
+                    >
+
+                    <select id="rfSeverityFilter">
+                        <option value="">All severities</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+
+                    <button class="rf-small-button" id="rfRefresh">
+                        ↻ Refresh
+                    </button>
+                </div>
+
+                <div class="rf-table-wrap">
+                    <table class="rf-table">
+                        <thead>
+                            <tr>
+                                <th>Ticket</th>
+                                <th>Road / Location</th>
+                                <th>Damage</th>
+                                <th>Severity</th>
+                                <th>Reports</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rfComplaintsTable"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- AI DETECTION -->
+
+        <section class="rf-view" id="ai-detection">
+
+            <div class="rf-section-intro">
+                <span class="rf-eyebrow">COMPUTER VISION</span>
+                <h2>YOLO26 AI Detection Center</h2>
+                <p>
+                    Compare citizen-submitted photos with AI-annotated
+                    road damage images.
+                </p>
+            </div>
+
+            <div class="rf-panel">
+                <div class="rf-panel-heading">
+                    <h3>AI Detection Records</h3>
+                    <span class="rf-live-tag">YOLO26</span>
+                </div>
+
+                <div id="rfDetectionGrid" class="rf-detection-grid"></div>
+            </div>
+
+        </section>
+
+
+        <!-- STATUS TRACKING -->
+
+        <section class="rf-view" id="status-tracking">
+
+            <div class="rf-section-intro">
+                <span class="rf-eyebrow">REPAIR MANAGEMENT</span>
+                <h2>Complaint Status Tracking</h2>
+                <p>Select a stage to view only tickets in that stage.</p>
+            </div>
+
+            <div class="rf-status-tabs">
+
+                <button class="rf-status-tab active" data-status="Reported">
+                    Reported
+                    <strong id="countReported">0</strong>
+                </button>
+
+                <button class="rf-status-tab" data-status="Verified">
+                    Verified
+                    <strong id="countVerified">0</strong>
+                </button>
+
+                <button class="rf-status-tab" data-status="Assigned">
+                    Assigned
+                    <strong id="countAssigned">0</strong>
+                </button>
+
+                <button class="rf-status-tab" data-status="Fixed">
+                    Fixed
+                    <strong id="countFixed">0</strong>
+                </button>
+
+            </div>
+
+            <div class="rf-panel">
+
+                <div class="rf-panel-heading">
+                    <h3 id="rfStatusHeading">Reported Complaints</h3>
+                </div>
+
+                <div class="rf-table-wrap">
+                    <table class="rf-table">
+                        <thead>
+                            <tr>
+                                <th>Ticket</th>
+                                <th>Road</th>
+                                <th>Damage</th>
+                                <th>Severity</th>
+                                <th>Reports</th>
+                                <th>Priority</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rfStatusTable"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- WORK ORDERS -->
+
+        <section class="rf-view" id="work-orders">
+
+            <div class="rf-section-intro">
+                <span class="rf-eyebrow">MAINTENANCE DOCUMENTATION</span>
+                <h2>Work Orders</h2>
+                <p>Open a complaint and download its generated PDF work order.</p>
+            </div>
+
+            <div class="rf-panel">
+
+                <div class="rf-toolbar">
+                    <input
+                        type="search"
+                        id="rfWorkSearch"
+                        placeholder="Search work orders..."
+                    >
+                </div>
+
+                <div class="rf-table-wrap">
+                    <table class="rf-table">
+                        <thead>
+                            <tr>
+                                <th>Ticket</th>
+                                <th>Road</th>
+                                <th>Damage</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rfWorkTable"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- TICKET DETAIL MODAL -->
+
+<div class="rf-modal" id="rfDetailModal">
+    <div class="rf-modal-content">
+
+        <button class="rf-modal-close" id="rfModalClose">×</button>
+
+        <span class="rf-eyebrow">COMPLAINT INFORMATION</span>
+        <h2 id="rfDetailTitle">Ticket Details</h2>
+
+        <div id="rfDetailBody"></div>
+
+        <div class="rf-modal-actions">
+            <button data-detail-status="Reported">Reported</button>
+            <button data-detail-status="Verified">Verified</button>
+            <button data-detail-status="Assigned">Assigned</button>
+            <button data-detail-status="Fixed">Fixed</button>
+            <button id="rfDetailPdf">Download PDF</button>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- PHOTO VIEWER -->
+
+<div class="rf-photo-modal" id="rfPhotoModal">
+    <button id="rfPhotoClose">×</button>
+    <img id="rfPhotoImage" alt="Road damage photograph">
+</div>
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="admin.js"></script>
+
+</body>
+</html>

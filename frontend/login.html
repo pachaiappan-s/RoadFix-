@@ -1,0 +1,1011 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoadFix - Login Portal</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --green: #00d6a0;
+    --dark: #041710;
+    --gold: #e9aa42;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: radial-gradient(ellipse at center, #12372d, #04110d 75%);
+    color: white;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 16px;
+    position: relative;
+}
+
+/* BACKGROUND GLOW */
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    width: 450px;
+    height: 450px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: .22;
+    pointer-events: none;
+    animation: glow 8s ease-in-out infinite alternate;
+}
+
+body::before {
+    background: #00d6a0;
+    top: -180px;
+    left: -130px;
+}
+
+body::after {
+    background: #e9aa42;
+    bottom: -200px;
+    right: -130px;
+    animation-delay: 3s;
+}
+
+@keyframes glow {
+    from {
+        transform: translate(0, 0) scale(.85);
+        opacity: .12;
+    }
+    to {
+        transform: translate(80px, 60px) scale(1.25);
+        opacity: .32;
+    }
+}
+
+/* FLOATING PARTICLES */
+.particles {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.particle {
+    position: absolute;
+    bottom: -30px;
+    width: 5px;
+    height: 5px;
+    background: #00e6a8;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #00e6a8;
+    animation: floatUp linear infinite;
+}
+
+.particle:nth-child(1) { left: 8%; animation-duration: 12s; }
+.particle:nth-child(2) { left: 20%; animation-duration: 17s; animation-delay: 2s; }
+.particle:nth-child(3) { left: 35%; animation-duration: 14s; animation-delay: 4s; }
+.particle:nth-child(4) { left: 50%; animation-duration: 18s; animation-delay: 1s; }
+.particle:nth-child(5) { left: 65%; animation-duration: 13s; animation-delay: 3s; }
+.particle:nth-child(6) { left: 78%; animation-duration: 16s; animation-delay: 5s; }
+.particle:nth-child(7) { left: 92%; animation-duration: 15s; animation-delay: 2s; }
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) scale(.5);
+        opacity: 0;
+    }
+    15% { opacity: .8; }
+    85% { opacity: .6; }
+    100% {
+        transform: translateY(-110vh) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* INTRO */
+.intro {
+    text-align: center;
+    margin-bottom: 26px;
+    position: relative;
+    z-index: 1;
+    animation: slideDown .9s ease both;
+}
+
+.intro small {
+    display: block;
+    color: #7fa394;
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+}
+
+.intro h1 {
+    font-size: 30px;
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+.intro h1 span {
+    color: var(--gold);
+    display: block;
+}
+
+/* MAIN CARD */
+.auth-card {
+    position: relative;
+    z-index: 1;
+    width: 900px;
+    max-width: 100%;
+    height: 540px;
+    background: #f7f1e5;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+        0 24px 70px rgba(0,0,0,.45),
+        0 0 35px rgba(0,214,160,.15);
+    color: #17271f;
+    animation: cardEnter 1s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes cardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(45px) scale(.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* LIGHT STREAK */
+.auth-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 55%;
+    height: 100%;
+    z-index: 7;
+    pointer-events: none;
+    background: linear-gradient(
+        110deg,
+        transparent,
+        rgba(0,214,160,.18),
+        rgba(233,170,66,.22),
+        transparent
+    );
+    transform: skewX(-18deg);
+    animation: lightSweep 1.6s ease .6s both;
+}
+
+@keyframes lightSweep {
+    to { left: 150%; }
+}
+
+/* COMMON PANELS */
+.pane,
+.citizen-pane,
+.signup-pane {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2;
+    transition: opacity .35s ease, visibility .35s;
+}
+
+.pane {
+    left: 0;
+    width: 45%;
+    padding: 40px 44px;
+    opacity: 1;
+    visibility: visible;
+}
+
+.citizen-pane {
+    right: 0;
+    width: 40%;
+    padding: 40px 34px;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.signup-pane {
+    left: 0;
+    width: 45%;
+    padding: 40px 44px;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.pane h2,
+.citizen-pane h2,
+.signup-pane h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.pane h2::after,
+.citizen-pane h2::after,
+.signup-pane h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 30px;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 2px;
+}
+
+/* INPUT FIELDS */
+.field {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.field input {
+    width: 100%;
+    padding: 11px 32px 9px 2px;
+    border: none;
+    border-bottom: 1px solid #c9c1b0;
+    background: transparent;
+    color: #17271f;
+    font-size: 13px;
+    outline: none;
+    transition: border-color .3s, box-shadow .3s;
+}
+
+.field input:focus {
+    border-bottom-color: #064b3d;
+    box-shadow: 0 2px 0 rgba(0,214,160,.2);
+}
+
+.field input::placeholder {
+    color: #8a9189;
+}
+
+.field .icon,
+.field .eye {
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: #8a9189;
+}
+
+.field .eye {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.field .eye:hover {
+    color: #064b3d;
+}
+
+.field svg {
+    width: 17px;
+    height: 17px;
+}
+
+/* BUTTONS */
+.submit,
+.report-button {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(100deg, #064b3d, #08745b);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 6px;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 5px 18px rgba(6,75,61,.2);
+    transition: background .25s, transform .25s, box-shadow .25s;
+}
+
+.submit:hover,
+.report-button:hover {
+    background: linear-gradient(100deg, #08745b, #00a982);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,150,110,.35);
+}
+
+.msg {
+    min-height: 16px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #c0392b;
+    text-align: center;
+}
+
+.panel-message {
+    min-height: 16px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #c0392b;
+    text-align: center;
+}
+
+/* SWITCH LINKS */
+.switch-link {
+    display: block;
+    width: 100%;
+    border: none;
+    background: transparent;
+    text-align: center;
+    margin-top: 16px;
+    font-size: 12px;
+    color: #5c685f;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.switch-link b {
+    color: #17271f;
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+    text-underline-offset: 3px;
+}
+
+.switch-link:hover b {
+    color: #08745b;
+}
+
+/* CITIZEN DESCRIPTION */
+.citizen-pane p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #647168;
+    margin-bottom: 18px;
+}
+
+/* DIAGONAL SLIDING BLADE */
+.welcome {
+    position: absolute;
+    top: 0;
+    left: 40%;
+    width: 60%;
+    height: 100%;
+    z-index: 4;
+    background: linear-gradient(135deg, #0a5c49, #031b15);
+    clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
+    overflow: hidden;
+    transition:
+        left .8s cubic-bezier(.77,0,.18,1),
+        clip-path .8s cubic-bezier(.77,0,.18,1);
+}
+
+/* CITIZEN ANIMATION */
+.auth-card[data-state="citizen"] .welcome {
+    left: 0;
+    clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
+}
+
+/* SIGNUP ANIMATION */
+.auth-card[data-state="signup"] .welcome {
+    left: 40%;
+    clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* ROTATING CIRCLES */
+.welcome::before {
+    content: "";
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border: 1px solid rgba(0,255,190,.35);
+    border-radius: 50%;
+    top: 15%;
+    right: 5%;
+    box-shadow:
+        0 0 30px rgba(0,255,190,.12),
+        inset 0 0 30px rgba(0,255,190,.08);
+    animation: orbit 12s linear infinite;
+}
+
+.welcome::after {
+    content: "";
+    position: absolute;
+    width: 190px;
+    height: 190px;
+    border: 1px solid rgba(233,170,66,.5);
+    border-radius: 50%;
+    bottom: 5%;
+    right: 12%;
+    animation: orbit 9s linear infinite reverse;
+}
+
+@keyframes orbit {
+    from { transform: rotate(0deg) scale(.9); }
+    to { transform: rotate(360deg) scale(1.1); }
+}
+
+/* BLADE TEXT */
+.w-text {
+    position: absolute;
+    top: 50%;
+    right: 8%;
+    width: 40%;
+    transform: translateY(-50%);
+    color: white;
+    z-index: 2;
+    transition: opacity .25s ease, transform .5s ease;
+}
+
+.w-text small {
+    color: var(--gold);
+    letter-spacing: 3px;
+    font-size: 10px;
+}
+
+.w-text h3 {
+    color: white;
+    font-family: Georgia, serif;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.15;
+    margin: 14px 0;
+}
+
+.w-text h3 em {
+    color: var(--gold);
+}
+
+.w-text p {
+    color: #b6c8bd;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* CITIZEN BLADE TEXT */
+.auth-card[data-state="citizen"] .w-text {
+    right: auto;
+    left: 10%;
+    width: 38%;
+}
+
+/* SIGNUP BLADE TEXT */
+.auth-card[data-state="signup"] .w-text {
+    right: 8%;
+    left: auto;
+    width: 40%;
+}
+
+/* PANEL VISIBILITY */
+.auth-card[data-state="login"] .pane {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: .45s;
+}
+
+.auth-card[data-state="login"] .citizen-pane,
+.auth-card[data-state="login"] .signup-pane {
+    opacity: 0;
+    visibility: hidden;
+    transition-delay: 0s;
+}
+
+.auth-card[data-state="citizen"] .pane,
+.auth-card[data-state="citizen"] .signup-pane {
+    opacity: 0;
+    visibility: hidden;
+    transition-delay: 0s;
+}
+
+.auth-card[data-state="citizen"] .citizen-pane {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: .45s;
+}
+
+.auth-card[data-state="signup"] .pane,
+.auth-card[data-state="signup"] .citizen-pane {
+    opacity: 0;
+    visibility: hidden;
+    transition-delay: 0s;
+}
+
+.auth-card[data-state="signup"] .signup-pane {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: .45s;
+}
+
+/* ACCESSIBILITY */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 760px) {
+    body {
+        padding: 20px 14px;
+    }
+
+    .intro h1 {
+        font-size: 24px;
+    }
+
+    .auth-card {
+        height: auto;
+        min-height: 480px;
+    }
+
+    .welcome {
+        display: none;
+    }
+
+    .pane,
+    .citizen-pane,
+    .signup-pane {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        width: 100%;
+        min-height: 480px;
+        padding: 34px 26px;
+        transition: none;
+    }
+
+    .pane,
+    .citizen-pane,
+    .signup-pane {
+        display: none;
+    }
+
+    .auth-card[data-state="login"] .pane,
+    .auth-card[data-state="citizen"] .citizen-pane,
+    .auth-card[data-state="signup"] .signup-pane {
+        display: flex;
+        opacity: 1;
+        visibility: visible;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- FLOATING PARTICLES -->
+<div class="particles" aria-hidden="true">
+    <span class="particle"></span>
+    <span class="particle"></span>
+    <span class="particle"></span>
+    <span class="particle"></span>
+    <span class="particle"></span>
+    <span class="particle"></span>
+    <span class="particle"></span>
+</div>
+
+<!-- INTRO -->
+<div class="intro">
+    <small>ROADFIX · SMART ROAD MANAGEMENT</small>
+    <h1>
+        Manage road damage,
+        <span>keep roads safe.</span>
+    </h1>
+</div>
+
+<!-- MAIN CARD -->
+<section class="auth-card" id="authCard" data-state="login">
+
+    <!-- ADMIN LOGIN -->
+    <div class="pane">
+
+        <form action="/login" method="POST">
+
+            <h2>Admin sign in</h2>
+
+            <div class="field">
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    autocomplete="username"
+                    required
+                >
+
+                <svg class="icon" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor"
+                     stroke-width="1.8">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>
+                </svg>
+            </div>
+
+            <div class="field">
+                <input
+                    type="password"
+                    name="password"
+                    id="adminPass"
+                    placeholder="Password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="eye"
+                    id="eyeBtn"
+                    aria-label="Show password"
+                >
+                    <svg viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor"
+                         stroke-width="1.8">
+                        <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
+            </div>
+
+            <button type="submit" class="submit">
+                Sign in
+            </button>
+
+            <p class="msg" id="msg" aria-live="polite"></p>
+
+        </form>
+
+        <button
+            type="button"
+            class="switch-link"
+            id="showCitizen"
+        >
+            Not an admin? <b>Go to Citizen Dashboard</b>
+        </button>
+
+    </div>
+
+    <!-- CITIZEN LOGIN -->
+    <div class="citizen-pane">
+
+        <h2>Citizen sign in</h2>
+
+        <p>
+            Welcome to RoadFix. Sign in to access your
+            citizen account and report damaged roads.
+        </p>
+
+        <form action="/user-login" method="POST">
+
+            <div class="field">
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="submit">
+                Citizen Sign in
+            </button>
+
+            <p class="panel-message" id="citizenMsg"></p>
+
+        </form>
+
+        <button
+            type="button"
+            class="switch-link"
+            id="showSignup"
+        >
+            New to RoadFix? <b>Create Account</b>
+        </button>
+
+        <button
+            type="button"
+            class="switch-link"
+            id="showAdmin"
+        >
+            Are you an admin? <b>Admin sign in</b>
+        </button>
+
+        <a href="/user" class="switch-link">
+            Open Citizen Dashboard
+        </a>
+
+    </div>
+
+    <!-- CITIZEN CREATE ACCOUNT -->
+    <div class="signup-pane">
+
+        <form action="/user-signup" method="POST" id="signupForm">
+
+            <h2>Create Account</h2>
+
+            <div class="field">
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Create username"
+                    minlength="3"
+                    maxlength="30"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <input
+                    type="password"
+                    name="password"
+                    id="signupPassword"
+                    placeholder="Create password"
+                    minlength="6"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <input
+                    type="password"
+                    name="confirm_password"
+                    id="confirmPassword"
+                    placeholder="Confirm password"
+                    minlength="6"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="submit">
+                Create Account
+            </button>
+
+            <p class="panel-message" id="signupMsg"></p>
+
+        </form>
+
+        <button
+            type="button"
+            class="switch-link"
+            id="backToCitizen"
+        >
+            Already have an account? <b>Citizen Sign in</b>
+        </button>
+
+        <button
+            type="button"
+            class="switch-link"
+            id="signupToAdmin"
+        >
+            Back to Admin sign in
+        </button>
+
+    </div>
+
+    <!-- SLIDING DIAGONAL BLADE -->
+    <div class="welcome">
+
+        <div class="w-text" id="bladeText">
+
+            <small>R O A D F I X</small>
+
+            <h3>
+                Welcome<br>
+                <em>back.</em>
+            </h3>
+
+            <p>
+                Review reports, assign repair
+                crews and track every ticket
+                to completion.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script>
+
+/* ADMIN PASSWORD SHOW / HIDE */
+
+document.getElementById("eyeBtn").addEventListener("click", function () {
+
+    const input = document.getElementById("adminPass");
+    const show = input.type === "password";
+
+    input.type = show ? "text" : "password";
+
+    this.setAttribute(
+        "aria-label",
+        show ? "Hide password" : "Show password"
+    );
+});
+
+
+/* ANIMATED PANEL ELEMENTS */
+
+const authCard = document.getElementById("authCard");
+const bladeText = document.getElementById("bladeText");
+
+
+/* ADMIN LOGIN SCREEN */
+
+function showAdminPanel() {
+
+    authCard.dataset.state = "login";
+
+    bladeText.innerHTML = `
+        <small>R O A D F I X</small>
+        <h3>
+            Welcome<br>
+            <em>back.</em>
+        </h3>
+        <p>
+            Review reports, assign repair
+            crews and track every ticket
+            to completion.
+        </p>
+    `;
+}
+
+
+/* CITIZEN LOGIN SCREEN */
+
+function showCitizenPanel() {
+
+    authCard.dataset.state = "citizen";
+
+    bladeText.innerHTML = `
+        <small>R O A D F I X</small>
+        <h3>
+            Welcome<br>
+            <em>Citizen.</em>
+        </h3>
+        <p>
+            Sign in, report potholes and
+            help your community travel safely.
+        </p>
+    `;
+}
+
+
+/* CITIZEN SIGNUP SCREEN */
+
+function showSignupPanel() {
+
+    authCard.dataset.state = "signup";
+
+    bladeText.innerHTML = `
+        <small>R O A D F I X</small>
+        <h3>
+            Join<br>
+            <em>RoadFix.</em>
+        </h3>
+        <p>
+            Create your citizen account
+            and help build safer roads.
+        </p>
+    `;
+}
+
+
+/* BUTTON EVENTS */
+
+document.getElementById("showCitizen").addEventListener(
+    "click",
+    showCitizenPanel
+);
+
+document.getElementById("showAdmin").addEventListener(
+    "click",
+    showAdminPanel
+);
+
+document.getElementById("showSignup").addEventListener(
+    "click",
+    showSignupPanel
+);
+
+document.getElementById("backToCitizen").addEventListener(
+    "click",
+    showCitizenPanel
+);
+
+document.getElementById("signupToAdmin").addEventListener(
+    "click",
+    showAdminPanel
+);
+
+
+/* CHECK PASSWORD CONFIRMATION */
+
+document.getElementById("signupForm").addEventListener(
+    "submit",
+    function (event) {
+
+        const password = document.getElementById("signupPassword").value;
+        const confirm = document.getElementById("confirmPassword").value;
+        const message = document.getElementById("signupMsg");
+
+        if (password !== confirm) {
+
+            event.preventDefault();
+
+            message.textContent = "Passwords do not match.";
+
+            return;
+        }
+
+        message.textContent = "";
+    }
+);
+
+
+/* ADMIN LOGIN ERROR */
+
+const params = new URLSearchParams(window.location.search);
+
+if (params.has("error")) {
+
+    document.getElementById("msg").textContent =
+        "Wrong admin username or password.";
+
+}
+
+</script>
+
+</body>
+</html>

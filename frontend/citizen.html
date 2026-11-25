@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RoadFix - Report Road Damage</title>
+
+    <!-- Leaflet Map CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <!-- RoadFix Styles -->
+    <link rel="stylesheet" href="/style.css">
+
+    <!-- Theme Script -->
+    <script src="/theme.js"></script>
+</head>
+
+<body class="citizen-bg">
+
+    <!-- Header -->
+    <header class="admin-header">
+
+        <div>
+            <h1>RoadFix</h1>
+            <p>Report a pothole or road damage · Chennai South zone</p>
+        </div>
+
+        <div class="header-actions">
+            <button
+                id="theme-toggle"
+                class="theme-toggle"
+                type="button"
+                aria-label="Toggle dark mode"
+                title="Toggle dark mode">
+            </button>
+        </div>
+
+    </header>
+
+
+    <!-- Submit Road Damage Report -->
+    <section class="card">
+
+        <h2>Submit a report</h2>
+
+        <form id="reportForm">
+
+            <!-- Upload Road Damage Photo -->
+            <input
+                type="file"
+                name="photo"
+                accept="image/*"
+                required
+            >
+
+            <!-- Road Name -->
+            <input
+                type="text"
+                id="road_name"
+                name="road_name"
+                placeholder="Road name"
+                required
+            >
+
+            <!-- Citizen Email -->
+            <input
+                type="email"
+                name="citizen_email"
+                placeholder="Your email (optional, for updates)"
+            >
+
+            <!-- Map Location Selection -->
+            <p>Click on the map to set the location:</p>
+
+            <!-- Location Search -->
+            <div class="search-row">
+
+                <input
+                    type="text"
+                    id="placeSearch"
+                    placeholder="Search area, street or landmark..."
+                >
+
+                <button
+                    type="button"
+                    id="placeSearchBtn">
+                    Search
+                </button>
+
+            </div>
+
+            <!-- Map -->
+            <div class="map-wrap">
+
+                <div id="pickMap"></div>
+
+                <!-- Current Location Button -->
+                <button
+                    type="button"
+                    id="myLocationBtn"
+                    class="locate-btn"
+                    aria-label="Use my current location"
+                    title="Use my current location">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round">
+
+                        <circle cx="12" cy="12" r="3"/>
+                        <circle cx="12" cy="12" r="7"/>
+
+                        <path d="M12 2v3"/>
+                        <path d="M12 19v3"/>
+                        <path d="M2 12h3"/>
+                        <path d="M19 12h3"/>
+
+                    </svg>
+
+                </button>
+
+            </div>
+
+            <!-- Selected Address -->
+            <p
+                id="pickedAddress"
+                style="color:var(--text-muted);font-size:13px;margin:8px 0;">
+            </p>
+
+            <!-- Hidden GPS Coordinates -->
+            <input
+                type="hidden"
+                name="lat"
+                id="lat"
+                required
+            >
+
+            <input
+                type="hidden"
+                name="lng"
+                id="lng"
+                required
+            >
+
+            <!-- Submit Button -->
+            <button type="submit">
+                Submit report
+            </button>
+
+        </form>
+
+        <!-- Notification Messages -->
+        <div
+            id="notification"
+            class="notification"
+            role="alert"
+            aria-live="polite">
+        </div>
+
+        <!-- Report Submission Result -->
+        <p id="reportResult"></p>
+
+    </section>
+
+
+    <!-- Check Ticket Status -->
+    <section class="card">
+
+        <h2>Check your ticket status</h2>
+
+        <input
+            type="text"
+            id="lookupCode"
+            placeholder="e.g. RF-1042"
+        >
+
+        <button
+            id="lookupBtn"
+            type="button">
+            Check status
+        </button>
+
+        <!-- Ticket Status Result -->
+        <div id="lookupResult"></div>
+
+    </section>
+
+
+    <!-- Leaflet Map JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- RoadFix Citizen JavaScript -->
+    <script src="/citizen.js"></script>
+
+</body>
+</html>
